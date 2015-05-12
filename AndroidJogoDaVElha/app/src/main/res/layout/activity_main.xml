@@ -5,7 +5,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <TextView android:text="@string/player_turn" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <fragment
+        android:name="com.studiosol.sandbox.androidjogodavelha.Fragments.GridFragment"
+        android:id="@+id/grid_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_grid" />
+
+    <TextView
+        android:id="@+id/info_bar"
+        android:text="@string/player_turn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/grid_fragment"/>
 
 </RelativeLayout>

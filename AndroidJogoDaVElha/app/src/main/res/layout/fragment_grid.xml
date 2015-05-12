@@ -1,11 +1,101 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.studiosol.sandbox.androidjogodavelha.Fragments.GridFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+
+    <!-- Linha 1 -->
+
+    <ImageButton android:id="@+id/b2"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/slot"
+        android:tag="2"
+        />
+
+    <ImageButton android:id="@+id/b1"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_toStartOf="@id/b2"
+        android:layout_toLeftOf="@id/b2"
+        android:tag="1"
+        />
+
+    <ImageButton android:id="@+id/b0"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_toStartOf="@id/b1"
+        android:layout_toLeftOf="@id/b1"
+        android:src="@drawable/slot"
+        android:tag="0"
+        />
 
 
-</FrameLayout>
+    <!-- Linha 2 -->
+
+    <ImageButton android:id="@+id/b5"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/b2"
+        android:src="@drawable/slot"
+        android:tag="5"
+        />
+
+    <ImageButton android:id="@+id/b4"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_toStartOf="@id/b5"
+        android:layout_toLeftOf="@id/b5"
+        android:layout_below="@id/b1"
+        android:src="@drawable/slot"
+        android:tag="4"
+        />
+
+    <ImageButton android:id="@+id/b3"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_toStartOf="@id/b4"
+        android:layout_toLeftOf="@id/b4"
+        android:layout_below="@id/b0"
+        android:src="@drawable/slot"
+        android:tag="3"
+        />
+
+
+    <!-- Linha 3 -->
+
+    <ImageButton android:id="@+id/b8"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/b5"
+        android:src="@drawable/slot"
+        android:tag="8"
+        />
+
+    <ImageButton android:id="@+id/b7"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_toStartOf="@id/b8"
+        android:layout_toLeftOf="@id/b8"
+        android:layout_below="@id/b4"
+        android:src="@drawable/slot"
+        android:tag="7"
+        />
+
+    <ImageButton android:id="@+id/b6"
+        android:layout_width="@dimen/slot_side_length"
+        android:layout_height="@dimen/slot_side_length"
+        android:layout_below="@id/b3"
+        android:layout_toStartOf="@id/b7"
+        android:layout_toLeftOf="@id/b7"
+        android:src="@drawable/slot"
+        android:tag="6"
+        />
+
+</RelativeLayout>

@@ -2,8 +2,10 @@
     <string name="app_name">AndroidJogoDaVelha</string>
 
     <string name="player_turn">Realize sua jogada!</string>
-    <string name="action_settings">Settings</string>
+    <string name="you_win">Voce venceu =D</string>
+    <string name="you_lose">Voce perdeu =(</string>
+    <string name="draw_game">Deu Velha =/</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="reset">Reset game</string>
 </resources>
