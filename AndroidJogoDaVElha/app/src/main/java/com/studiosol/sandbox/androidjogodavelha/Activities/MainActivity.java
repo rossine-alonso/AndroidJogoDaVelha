@@ -1,13 +1,12 @@
 package com.studiosol.sandbox.androidjogodavelha.Activities;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.studiosol.sandbox.androidjogodavelha.AI.AIPlayer;
-import com.studiosol.sandbox.androidjogodavelha.AI.AIPlayer1;
 import com.studiosol.sandbox.androidjogodavelha.Fragments.GridFragment;
 import com.studiosol.sandbox.androidjogodavelha.Fragments.GridFragment.OnSlotClickListener;
 import com.studiosol.sandbox.androidjogodavelha.R;
@@ -15,19 +14,23 @@ import com.studiosol.sandbox.androidjogodavelha.R;
 
 public class MainActivity extends AppCompatActivity implements OnSlotClickListener {
 
-    private static final String STATE_TEXT = "current_text";
     private static final String STATE_TITLE = "current_title";
 
-    //machine is O
-    private boolean opponentIsMachine = true;
-    private int machinePlayer = 0;
-    private AIPlayer robot = new AIPlayer1();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(savedInstanceState == null){
+            setTitle("Rodada 1");
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            GridFragment frag = GridFragment.newInstance(this);
+            fragmentTransaction.add(R.id.fragment_container, frag);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
@@ -59,22 +62,20 @@ public class MainActivity extends AppCompatActivity implements OnSlotClickListen
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        TextView text = (TextView) findViewById(R.id.info_bar);
-
-        outState.putCharSequence(STATE_TEXT, text.getText());
         outState.putCharSequence(STATE_TITLE, getTitle());
-
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
-        TextView text = (TextView) findViewById(R.id.info_bar);
-
-        text.setText(savedInstanceState.getCharSequence(STATE_TEXT));
         setTitle(savedInstanceState.getCharSequence(STATE_TITLE));
+
+        GridFragment gridFrag = (GridFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+        if(gridFrag != null) {
+            gridFrag.setListener(this);
+        }
+
     }
 
     @Override
@@ -85,23 +86,16 @@ public class MainActivity extends AppCompatActivity implements OnSlotClickListen
 
     @Override
     public void endGame(int player) {
-        TextView text = (TextView) findViewById(R.id.info_bar);
-        switch (player) {
-            case 0:
-                text.setText(R.string.draw_game);
-                break;
-            case 1:
-                text.setText(R.string.you_win);
-                break;
-            case 2:
-                text.setText(R.string.you_lose);
-                break;
-        }
+
     }
 
-    void resetGame(){
-        GridFragment gridFrag = (GridFragment) getFragmentManager().findFragmentById(R.id.grid_fragment);
 
-        gridFrag.resetSlots();
+    void resetGame(){
+        GridFragment gridFrag = (GridFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+        if(gridFrag != null) {
+            gridFrag.resetSlots();
+        }
+
+        setTitle("Rodada 1");
     }
 }

@@ -1,12 +1,12 @@
 package com.studiosol.sandbox.androidjogodavelha.Fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.studiosol.sandbox.androidjogodavelha.AI.AIPlayer;
 import com.studiosol.sandbox.androidjogodavelha.AI.AIPlayer1;
@@ -31,40 +31,21 @@ public class GridFragment extends Fragment implements View.OnClickListener{
     private static int[] state_slots = {0,0,0,0,0,0,0,0,0};
 
     //machine is O
-    private boolean opponentIsMachine = true;
-    private int machinePlayer = 0;
+    private static final boolean OPPONENT_IS_MACHINE = true;
+    private static final int MACHINE_PLAYER = 0;
     private AIPlayer robot = new AIPlayer1();
 
 
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String STATE_TEXT = "current_text";
     private static final String STATE_GRID = "grid_state";
     private static final String STATE_LOCKED = "locked_state";
 
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnSlotClickListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GridFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static GridFragment newInstance(String param1, String param2) {
+    public static GridFragment newInstance(OnSlotClickListener mListener) {
         GridFragment fragment = new GridFragment();
-        Bundle args = new Bundle();
-        args.putString(STATE_GRID, param1);
-        args.putString(STATE_LOCKED, param2);
-        fragment.setArguments(args);
+        fragment.mListener = mListener;
         return fragment;
     }
 
@@ -75,17 +56,13 @@ public class GridFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(STATE_GRID);
-            mParam2 = getArguments().getString(STATE_LOCKED);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_grid, container, false);
+        View view = inflater.inflate(R.layout.fragment_grid_2, container, false);
 
 
         SLOTS[0] = (ImageButton) view.findViewById(R.id.b0);
@@ -108,16 +85,16 @@ public class GridFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnSlotClickListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnSlotClickListener");
-        }
-    }
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        try {
+//            mListener = (OnSlotClickListener) activity;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement OnSlotClickListener");
+//        }
+//    }
 
     @Override
     public void onDetach() {
@@ -127,8 +104,12 @@ public class GridFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        TextView text = (TextView) getView().findViewById(R.id.info_bar);
+
         outState.putIntArray(STATE_GRID, state_slots);
         outState.putBoolean(STATE_LOCKED, isGridLocked);
+        outState.putCharSequence(STATE_TEXT, text.getText());
+
         super.onSaveInstanceState(outState);
 
     }
@@ -137,10 +118,14 @@ public class GridFragment extends Fragment implements View.OnClickListener{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if(savedInstanceState != null){
+            TextView text = (TextView) getView().findViewById(R.id.info_bar);
+
+            text.setText(savedInstanceState.getCharSequence(STATE_TEXT));
             setGrid(savedInstanceState.getIntArray(STATE_GRID));
             if(savedInstanceState.getBoolean(STATE_LOCKED)){
                 lockAllSlots();
             }
+
         }
     }
 
@@ -185,27 +170,31 @@ public class GridFragment extends Fragment implements View.OnClickListener{
         isX = !isX;
 
         if (didWon(player)) {
-            mListener.endGame(player);
+            endGame(player);
             lockAllSlots();
             return;
         }
 
         ++turn;
+
         if (turn > 9) { //draw game
-            mListener.endGame(0);
+            endGame(0);
             lockAllSlots();
+            return;
         } else {
             mListener.onSlotClick(position, turn);
         }
 
-        if (opponentIsMachine && turn % 2 == machinePlayer) {
+        if (OPPONENT_IS_MACHINE && turn % 2 == MACHINE_PLAYER) {
             int[][] AIBoard = getAIBoard();
 
             //call machine move
             Choice choice = robot.Move(AIBoard);
 
-            //click on the slot
-            onClick(SLOTS[choice.getLine()*3 + choice.getColumn()]);
+            if(choice != null) {
+                //click on the slot
+                onClick(SLOTS[choice.getLine() * 3 + choice.getColumn()]);
+            }
         }
     }
 
@@ -227,13 +216,13 @@ public class GridFragment extends Fragment implements View.OnClickListener{
         }
 
         //vertical
-        for (j = 0; i < size; ++i) {
-            for (i = 0; j < size; ++j) {
+        for (j = 0; j < size; ++j) {
+            for (i = 0; i < size; ++i) {
                 if (state_slots[i*3 + j] != player) {
                     break;
                 }
             }
-            if (j == 3) {
+            if (i == 3) {
                 return true;
             }
         }
@@ -291,6 +280,9 @@ public class GridFragment extends Fragment implements View.OnClickListener{
         unlockAllSlots();
 
         isX = true;
+
+        TextView text = (TextView) getView().findViewById(R.id.info_bar);
+        text.setText(R.string.player_turn);
     }
 
     private void setAllSlotsClickable(boolean state){
@@ -300,7 +292,24 @@ public class GridFragment extends Fragment implements View.OnClickListener{
         isGridLocked = !state;
     }
 
+    private void endGame(int player){
+        TextView text = (TextView) getView().findViewById(R.id.info_bar);
+        switch (player) {
+            case 0:
+                text.setText(R.string.draw_game);
+                break;
+            case 1:
+                text.setText(R.string.you_win);
+                break;
+            case 2:
+                text.setText(R.string.you_lose);
+                break;
+        }
+    }
 
+    public void setListener(OnSlotClickListener mListener) {
+        this.mListener = mListener;
+    }
 
 
     /**
@@ -316,7 +325,6 @@ public class GridFragment extends Fragment implements View.OnClickListener{
     public interface OnSlotClickListener {
         public void onSlotClick(int position, int turn);
         public void endGame(int player);
-
     }
 
 }
